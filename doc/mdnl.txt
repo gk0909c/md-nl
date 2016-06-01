@@ -1,0 +1,73 @@
+*mdnl.txt* markdown new line
+
+version: 1.0
+Author: gk0909c
+License: MIT license
+
+==============================================================================
+CONTENTS                                                                *mdnl*
+
+Introduction            |mdnl-introduction|
+Install                 |mdnl-install|
+Usage                   |mdnl-usage|
+
+==============================================================================
+INTRODUCTION                                               *mdnl-introduction*
+
+This help editting markdown document.
+When you add new line in editting paragraph or list contents.
+
+==============================================================================
+INSTALL                                                         *mdnl-install*
+
+iInstall the distributed files into your Vim script directory which is usually
+~/.vim/, or $HOME/vimfiles on Windows.
+
+==============================================================================
+USAGE                                                             *mdnl-usage*
+
+e.g. put these setting in your .vimrc
+>
+  imap <S-CR> <Plug>(mdnl_linebreak)     "To add new paragraph line.
+  imap <C-CR> <Plug>(mdnl_new_listitem)  "To add new listitem.
+<
+
+To add new paragraph line
+  If you write some line and type Shift+Enter, 
+  2 space added to end of line and cursor move to next new line.
+>
+    + some contents
+    + some paragraph line|
+<
+  type Shift+Enter, it's to be
+>
+    + some contents
+    + some paragraph line<Space><Space>
+      |
+<
+
+To add new list item
+  If you write some list and type Ctrl+Enter, 
+  cursor move to next new line, and new line starts as markdown list.
+>
+    + list 1
+    + list 2|
+<
+  type Ctrl+Enter, it's to be
+>
+    + list 1
+    + list 2
+    + |
+<
+  if you write number list,
+>
+    1. list 1
+    2. list 2|
+<
+  type Ctrl+Enter, it's to be
+>
+    1. list 1
+    2. list 2
+    3. |
+<
+==============================================================================

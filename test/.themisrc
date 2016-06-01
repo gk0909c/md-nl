@@ -1,0 +1,4 @@
+call themis#helper('command').with(themis#helper('assert'))
+
+let s:scope = themis#helper('scope')
+let g:mdnl = s:scope.funcs('autoload/mdnl.vim')

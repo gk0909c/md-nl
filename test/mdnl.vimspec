@@ -1,0 +1,98 @@
+Describe mdnl script functions
+  Context .get_first_char()
+    It return first char exclude space
+      call setline(1, 'abcdefg')
+      Assert Equals('a', g:mdnl.get_first_char(1))
+    End
+  End
+
+  Context .is_markdown_list_prefix()
+    It judge markdown list prefix
+      Assert Equals(1, g:mdnl.is_markdown_list_prefix('+'))
+      Assert Equals(1, g:mdnl.is_markdown_list_prefix('*'))
+      Assert Equals(1, g:mdnl.is_markdown_list_prefix('-'))
+      Assert Equals(0, g:mdnl.is_markdown_list_prefix('_'))
+      Assert Equals(1, g:mdnl.is_markdown_list_prefix('1'))
+      Assert Equals(0, g:mdnl.is_markdown_list_prefix('a'))
+    End
+  End
+
+  Context .search_paragraph_startline()
+    It find paragraph start row
+      call setline(1, '+ abc  ')
+      call setline(2, '  def  ')
+      call setline(3, '  ghi')
+
+      Assert Equals(1, g:mdnl.search_paragraph_startline(2, 3))
+    End
+  End
+
+  Context .get_new_listitem()
+    It return empty when not list
+      call setline(1, 'abc')
+
+      Assert Equals('', g:mdnl.get_new_listitem(1, 'a'))
+    End
+    It return list prefix when no indent list
+      call setline(1, '+ abc')
+
+      Assert Equals('+ ', g:mdnl.get_new_listitem(1, '+'))
+    End
+    It return increamented prefix when number list
+      call setline(1, '1. abc')
+
+      Assert Equals('2. ', g:mdnl.get_new_listitem(1, '1'))
+    End
+    It search list prefix backward
+      call setline(1, '* abc')
+      call setline(2, '  def')
+      call setline(3, '  ghi')
+
+      Assert Equals('* ', g:mdnl.get_new_listitem(3, 'g'))
+    End
+  End
+
+  Context .get_next_indent()
+    It don't increase indent when no list line
+      call setline(1, '+ abc')
+      call setline(2, '  def')
+
+      let indent_str = g:mdnl.get_next_indent(2, 'd')
+      Assert Equals(2, strlen(indent_str))
+    End
+    It increase indent when list line
+      set shiftwidth=2
+      call setline(1, 'abc')
+      call setline(2, '+ def')
+      call setline(3, '  + ghi')
+
+      let indent_str = g:mdnl.get_next_indent(3, '+')
+      Assert Equals(4, strlen(indent_str))
+    End
+  End
+End
+
+Describe mdnl global functions
+  let s:test_data = 'test/testdata.md'
+
+  Context .mdnl#add_new_line()
+    It continue paragraph
+      execute ':e! ' . s:test_data
+      set shiftwidth=2
+      call cursor(4, 0)
+      call mdnl#add_new_line(1)
+
+      Assert Equals(5, line('.'))
+      Assert Equals('    ', getline(5)) 
+    End
+    It add new list item line
+      execute ':e! ' . s:test_data
+      set shiftwidth=2
+      call cursor(8, 0)
+      call mdnl#add_new_line(2)
+
+      Assert Equals(9, line('.'))
+      Assert Equals('  3. ', getline(9)) 
+    End
+  End
+End

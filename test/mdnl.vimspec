@@ -1,19 +1,15 @@
 Describe mdnl script functions
-  Context .get_first_char()
-    It return first char exclude space
-      call setline(1, 'abcdefg')
-      Assert Equals('a', g:mdnl.get_first_char(1))
-    End
-  End
-
-  Context .is_markdown_list_prefix()
-    It judge markdown list prefix
-      Assert Equals(1, g:mdnl.is_markdown_list_prefix('+'))
-      Assert Equals(1, g:mdnl.is_markdown_list_prefix('*'))
-      Assert Equals(1, g:mdnl.is_markdown_list_prefix('-'))
-      Assert Equals(0, g:mdnl.is_markdown_list_prefix('_'))
-      Assert Equals(1, g:mdnl.is_markdown_list_prefix('1'))
-      Assert Equals(0, g:mdnl.is_markdown_list_prefix('a'))
+  Context .get_markdown_list_prefix()
+    It return markdown list prefix
+      Assert Equals(g:mdnl.get_markdown_list_prefix('abcdefg'), '')
+      Assert Equals(g:mdnl.get_markdown_list_prefix('+ a'), '+')
+      Assert Equals(g:mdnl.get_markdown_list_prefix('  * b'), '*')
+      Assert Equals(g:mdnl.get_markdown_list_prefix('- dfasfa'), '-')
+      Assert Equals(g:mdnl.get_markdown_list_prefix('1. aaa'), '1')
+      Assert Equals(g:mdnl.get_markdown_list_prefix('11. aaa'), '11')
+      Assert Equals(g:mdnl.get_markdown_list_prefix('1. '), '1')
+      Assert Equals(g:mdnl.get_markdown_list_prefix('-abcdf'), '')
+      Assert Equals(g:mdnl.get_markdown_list_prefix('123'), '')
     End
   End
 
@@ -23,7 +19,7 @@ Describe mdnl script functions
       call setline(2, '  def  ')
       call setline(3, '  ghi')
 
-      Assert Equals(1, g:mdnl.search_paragraph_startline(2, 3))
+      Assert Equals(g:mdnl.search_paragraph_startline(2, 3), 1)
     End
   End
 
@@ -31,24 +27,24 @@ Describe mdnl script functions
     It return empty when not list
       call setline(1, 'abc')
 
-      Assert Equals('', g:mdnl.get_new_listitem(1, 'a'))
+      Assert Equals(g:mdnl.get_new_listitem(1, ''), '')
     End
     It return list prefix when no indent list
       call setline(1, '+ abc')
 
-      Assert Equals('+ ', g:mdnl.get_new_listitem(1, '+'))
+      Assert Equals(g:mdnl.get_new_listitem(1, '+'), '+ ')
     End
     It return increamented prefix when number list
       call setline(1, '1. abc')
 
-      Assert Equals('2. ', g:mdnl.get_new_listitem(1, '1'))
+      Assert Equals(g:mdnl.get_new_listitem(1, '1'), '2. ')
     End
     It search list prefix backward
       call setline(1, '* abc')
       call setline(2, '  def')
       call setline(3, '  ghi')
 
-      Assert Equals('* ', g:mdnl.get_new_listitem(3, 'g'))
+      Assert Equals(g:mdnl.get_new_listitem(3, ''), '* ')
     End
   End
 
@@ -57,8 +53,8 @@ Describe mdnl script functions
       call setline(1, '+ abc')
       call setline(2, '  def')
 
-      let indent_str = g:mdnl.get_next_indent(2, 'd')
-      Assert Equals(2, strlen(indent_str))
+      let indent_str = g:mdnl.get_next_indent(2, '')
+      Assert Equals(strlen(indent_str), 2)
     End
     It increase indent when list line
       set shiftwidth=2
@@ -67,7 +63,7 @@ Describe mdnl script functions
       call setline(3, '  + ghi')
 
       let indent_str = g:mdnl.get_next_indent(3, '+')
-      Assert Equals(4, strlen(indent_str))
+      Assert Equals(strlen(indent_str), 4)
     End
   End
 End
@@ -82,8 +78,8 @@ Describe mdnl global functions
       call cursor(4, 0)
       call mdnl#add_new_line(1)
 
-      Assert Equals(5, line('.'))
-      Assert Equals('    ', getline(5)) 
+      Assert Equals(line('.'), 5)
+      Assert Equals(getline(5), '    ') 
     End
     It add new list item line
       execute ':e! ' . s:test_data
@@ -91,8 +87,8 @@ Describe mdnl global functions
       call cursor(8, 0)
       call mdnl#add_new_line(2)
 
-      Assert Equals(9, line('.'))
-      Assert Equals('  3. ', getline(9)) 
+      Assert Equals(line('.'), 9)
+      Assert Equals(getline(9), '  3. ') 
     End
   End
 End

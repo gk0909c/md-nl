@@ -4,12 +4,12 @@
 "   2: create new list item
 function! mdnl#add_new_line(mode)
   let line = line('.')
-  let first_char = s:get_first_char(line)
+  let list_prefix = s:get_markdown_list_prefix(getline(line))
 
   if a:mode == 1
-    let line_str = s:get_next_indent(line, first_char)
+    let line_str = s:get_next_indent(line, list_prefix)
   else
-    let line_str = s:get_new_listitem(line, first_char)
+    let line_str = s:get_new_listitem(line, list_prefix)
   endif
 
   call append(line, line_str)
@@ -17,11 +17,11 @@ function! mdnl#add_new_line(mode)
 endfunction
 
 " get new line indent
-function! s:get_next_indent(line, first_char)
+function! s:get_next_indent(line, list_prefix)
   let indent_str = repeat(' ', shiftwidth())
   let tmp_indent = repeat(' ', indent(a:line))
   
-  if s:is_markdown_list_prefix(a:first_char)
+  if !empty(a:list_prefix)
     return tmp_indent . indent_str
   endif
 
@@ -29,23 +29,23 @@ function! s:get_next_indent(line, first_char)
 endfunction
 
 " get new list item
-function! s:get_new_listitem(line, first_char)
+function! s:get_new_listitem(line, list_prefix)
   let tmp_indent_size = indent(a:line)
 
-  if s:is_markdown_list_prefix(a:first_char)
-    let first_char = a:first_char
-  else
+  if empty(a:list_prefix)
     let start_line = s:search_paragraph_startline(tmp_indent_size, a:line)
-    let first_char = s:get_first_char(start_line)
+    let list_prefix = s:get_markdown_list_prefix(getline(start_line))
     let tmp_indent_size = tmp_indent_size - shiftwidth()
+  else
+    let list_prefix = a:list_prefix
   endif
   let indent_str = repeat(' ', tmp_indent_size)
 
-  if s:is_markdown_list_prefix(first_char)
-    if first_char =~ '\v[0-9]'
-      let prefix = first_char + 1 . '.'
+  if !empty(list_prefix)
+    if list_prefix =~ '\v[0-9]+'
+      let prefix = list_prefix + 1 . '.'
     else
-      let prefix = first_char 
+      let prefix = list_prefix 
     endif
 
     return indent_str . prefix . ' '
@@ -64,13 +64,16 @@ function! s:search_paragraph_startline(temp_indent, row)
   return a:row
 endfunction
 
-" judge markdown list prefix char
-function! s:is_markdown_list_prefix(char)
-  return a:char =~ '\v([+*-]|[0-9])'
-endfunction
-
 " get markdown list char
-function! s:get_first_char(row)
-  let left_trimed_line = substitute(getline(a:row), '^\s*\(.\{-}\)\s*$', '\1', '')
-  return left_trimed_line[0]
+function! s:get_markdown_list_prefix(line)
+  let left_trimed_line = substitute(a:line, '^\s*\(.\{-}\)', '\1', '')
+  let matches =  matchlist(left_trimed_line, '\v^(([+*-])(\s)|([0-9]+)(\.\s))')
+
+  if empty(matches)
+    return ''
+  elseif !empty(matches[4])
+    return matches[4]
+  elseif !empty(matches[2])
+    return matches[2]
+  endif
 endfunction

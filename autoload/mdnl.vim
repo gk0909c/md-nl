@@ -43,7 +43,13 @@ function! s:get_new_listitem(line, list_prefix)
 
   if !empty(list_prefix)
     if list_prefix =~ '\v[0-9]+'
-      let prefix = list_prefix + 1 . '.'
+      let matches = matchlist(list_prefix, '\v([0-9]+)(\.\s\[\s\])?')
+
+      if empty(matches[2])
+        let prefix = matches[1] + 1 . '.'
+      else
+        let prefix = matches[1] + 1 . matches[2]
+      endif
     else
       let prefix = list_prefix 
     endif
@@ -67,12 +73,14 @@ endfunction
 " get markdown list char
 function! s:get_markdown_list_prefix(line)
   let left_trimed_line = substitute(a:line, '^\s*\(.\{-}\)', '\1', '')
-  let matches =  matchlist(left_trimed_line, '\v^(([+*-])(\s)|([0-9]+)(\.\s))')
-
+  let matches = matchlist(left_trimed_line, '\v^(([+*-]|([0-9]+)(\.))(\s\[(x|\s)\])?(\s))')
+  
   if empty(matches)
     return ''
-  elseif !empty(matches[4])
-    return matches[4]
+  elseif !empty(matches[5])
+    return matches[2] . substitute(matches[5], 'x', ' ', '')
+  elseif !empty(matches[3])
+    return matches[3]
   elseif !empty(matches[2])
     return matches[2]
   endif

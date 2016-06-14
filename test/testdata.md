@@ -6,4 +6,6 @@ contents is ...
 + second
   1. one
   2. two
++ [ ] third
+1. [x] fourth
 + and more...

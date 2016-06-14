@@ -10,6 +10,8 @@ Describe mdnl script functions
       Assert Equals(g:mdnl.get_markdown_list_prefix('1. '), '1')
       Assert Equals(g:mdnl.get_markdown_list_prefix('-abcdf'), '')
       Assert Equals(g:mdnl.get_markdown_list_prefix('123'), '')
+      Assert Equals(g:mdnl.get_markdown_list_prefix('+ [x] abcd'), '+ [ ]')
+      Assert Equals(g:mdnl.get_markdown_list_prefix('1. [ ] abcd'), '1. [ ]')
     End
   End
 
@@ -38,6 +40,11 @@ Describe mdnl script functions
       call setline(1, '1. abc')
 
       Assert Equals(g:mdnl.get_new_listitem(1, '1'), '2. ')
+    End
+    It return increamented prefix when number list(check box)
+      call setline(1, '1. [ ] abc')
+
+      Assert Equals(g:mdnl.get_new_listitem(1, '1. [ ]'), '2. [ ] ')
     End
     It search list prefix backward
       call setline(1, '* abc')
@@ -89,6 +96,24 @@ Describe mdnl global functions
 
       Assert Equals(line('.'), 9)
       Assert Equals(getline(9), '  3. ') 
+    End
+    It new checkbox(github flavor)
+      execute ':e! ' . s:test_data
+      set shiftwidth=2
+      call cursor(9, 0)
+      call mdnl#add_new_line(2)
+
+      Assert Equals(line('.'), 10)
+      Assert Equals(getline(10), '+ [ ] ') 
+    End
+    It new number checkbox(github flavor)
+      execute ':e! ' . s:test_data
+      set shiftwidth=2
+      call cursor(10, 0)
+      call mdnl#add_new_line(2)
+
+      Assert Equals(line('.'), 11)
+      Assert Equals(getline(11), '2. [ ] ') 
     End
   End
 End

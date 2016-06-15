@@ -1,27 +1,25 @@
 " create markdown new line
 " mode
-"   1: markdown line brean(add two space to temporary line end)
+"   1: markdown line break
 "   2: create new list item
+"   3: markdown line break(split mode)
+"   4: create new list item(split mode)
 function! mdnl#add_new_line(mode)
-  if a:mode == 1 || a:mode == 2 
-    let line = line('.')
-  else
-    let line = line('.') - 1
-  endif
+  let split_mode = (a:mode == 1 || a:mode == 2) ? 0 : 1
+
+  let line = line('.') - (split_mode ? 1 : 0)
   let list_prefix = s:get_markdown_list_prefix(getline(line))
 
-  if a:mode == 1 || a:mode == 3
-    let line_str = s:get_next_indent(line, list_prefix)
-  else
-    let line_str = s:get_new_listitem(line, list_prefix)
-  endif
+  let line_str = (a:mode == 1 || a:mode == 3) ? 
+        \ s:get_next_indent(line, list_prefix) :
+        \ s:get_new_listitem(line, list_prefix) 
 
-  if a:mode == 1 || a:mode == 2 
-    call append(line, line_str)
-    call cursor(line + 1, 0)
-  else
+  if split_mode
     let new_line_str = matchlist(getline('.'), '^\(\s*\)\(\S\+\)')[2]
     call setline(line + 1, line_str . new_line_str)
+  else
+    call append(line, line_str)
+    call cursor(line + 1, 0)
   endif
 endfunction
 
@@ -41,6 +39,7 @@ endfunction
 function! s:get_new_listitem(line, list_prefix)
   let tmp_indent_size = indent(a:line)
 
+  " if temp line doesn't have list prefix, search it until indent change
   if empty(a:list_prefix)
     let start_line = s:search_paragraph_startline(tmp_indent_size, a:line)
     let list_prefix = s:get_markdown_list_prefix(getline(start_line))
@@ -52,13 +51,9 @@ function! s:get_new_listitem(line, list_prefix)
 
   if !empty(list_prefix)
     if list_prefix =~ '\v[0-9]+'
+      " when checkbox list, add it.
       let matches = matchlist(list_prefix, '\v([0-9]+)(\.\s\[\s\])?')
-
-      if empty(matches[2])
-        let prefix = matches[1] + 1 . '.'
-      else
-        let prefix = matches[1] + 1 . matches[2]
-      endif
+      let prefix = matches[1] + 1 . (empty(matches[2]) ? '.' : matches[2])
     else
       let prefix = list_prefix 
     endif

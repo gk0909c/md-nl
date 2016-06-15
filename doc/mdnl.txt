@@ -10,12 +10,14 @@ CONTENTS                                                                *mdnl*
 Introduction            |mdnl-introduction|
 Install                 |mdnl-install|
 Usage                   |mdnl-usage|
+Interface               |mdnl-interface|
 
 ==============================================================================
 INTRODUCTION                                               *mdnl-introduction*
 
 This help editting markdown document.
 When you add new line in editting paragraph or list contents.
+List contents is mean include github flavored checkbox list.
 
 ==============================================================================
 INSTALL                                                         *mdnl-install*
@@ -71,3 +73,28 @@ To add new list item
     3. |
 <
 ==============================================================================
+INTERFACE                                                     *mdnl-interface* 
+------------------------------------------------------------------------------
+KEY MAPPINGS
+
+                                                      *<Plug>(mdnl_linebreak)*
+<Plug>(mdnl_linebreak)
+    add new line, and add two space(markdown line break) to original line.
+    imap only.
+
+                                                   *<Plug>(mdnl_new_listitem)*
+<Plug>(mdnl_new_listitem)
+    add new line, and it has list prefix.
+    The prefix take over original line's list prefix.
+    If the prefix is number, it will increment.
+    imap only.
+
+                                             *<Plug>(mdnl_split_as_paragraph)*
+<Plug>(mdnl_split_as_paragraph)
+    like |<Plug>(mdnl_linebreak)|, but this split temporary line.
+    imap and nmap.
+
+                                                  *<Plug>(mdnl_split_as_list)*
+<Plug>(mdnl_split_as_list)
+    like |<Plug>(mdnl_new_listitem)|, but this split temporary line.
+    imap and nmap.

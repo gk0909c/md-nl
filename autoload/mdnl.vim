@@ -15,7 +15,8 @@ function! mdnl#add_new_line(mode)
         \ s:get_new_listitem(line, list_prefix) 
 
   if split_mode
-    let new_line_str = matchlist(getline('.'), '^\(\s*\)\(\S\+\)')[2]
+    let temp_line_strs = matchlist(getline('.'), '^\(\s*\)\(\S\+\)')
+    let new_line_str = empty(temp_line_strs) ? '' : temp_line_strs[2]
     call setline(line + 1, line_str . new_line_str)
   else
     call append(line, line_str)

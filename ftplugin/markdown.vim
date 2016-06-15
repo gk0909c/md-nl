@@ -7,7 +7,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 " markdown line break
-inoremap <silent><buffer> <Plug>(mdnl_linebreak) <Space><Space><Esc>:call mdnl#add_new_line(1)<CR>A
+inoremap <silent><buffer> <Plug>(mdnl_linebreak) <Esc>A<Space><Space><Esc>:call mdnl#add_new_line(1)<CR>A
 " markdown new list item
 inoremap <silent><buffer> <Plug>(mdnl_new_listitem) <ESC>:call mdnl#add_new_line(2)<CR>A
 

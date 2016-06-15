@@ -11,6 +11,11 @@ inoremap <silent><buffer> <Plug>(mdnl_linebreak) <Space><Space><Esc>:call mdnl#a
 " markdown new list item
 inoremap <silent><buffer> <Plug>(mdnl_new_listitem) <ESC>:call mdnl#add_new_line(2)<CR>A
 
+nnoremap <silent><buffer> <Plug>(mdnl_split_as_paragraph) i<Space><Space><CR><ESC>:call mdnl#add_new_line(3)<CR>
+inoremap <silent><buffer> <Plug>(mdnl_split_as_paragraph) <Space><Space><CR><ESC>:call mdnl#add_new_line(3)<CR>A
+nnoremap <silent><buffer> <Plug>(mdnl_split_as_list) i<CR><ESC>:call mdnl#add_new_line(4)<CR>
+inoremap <silent><buffer> <Plug>(mdnl_split_as_list) <CR><ESC>:call mdnl#add_new_line(4)<CR>A
+
 let g:loaded_mdnl = 1
 
 let &cpo = s:save_cpo

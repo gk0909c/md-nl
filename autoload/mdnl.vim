@@ -3,17 +3,26 @@
 "   1: markdown line brean(add two space to temporary line end)
 "   2: create new list item
 function! mdnl#add_new_line(mode)
-  let line = line('.')
+  if a:mode == 1 || a:mode == 2 
+    let line = line('.')
+  else
+    let line = line('.') - 1
+  endif
   let list_prefix = s:get_markdown_list_prefix(getline(line))
 
-  if a:mode == 1
+  if a:mode == 1 || a:mode == 3
     let line_str = s:get_next_indent(line, list_prefix)
   else
     let line_str = s:get_new_listitem(line, list_prefix)
   endif
 
-  call append(line, line_str)
-  call cursor(line + 1, 0)
+  if a:mode == 1 || a:mode == 2 
+    call append(line, line_str)
+    call cursor(line + 1, 0)
+  else
+    let new_line_str = matchlist(getline('.'), '^\(\s*\)\(\S\+\)')[2]
+    call setline(line + 1, line_str . new_line_str)
+  endif
 endfunction
 
 " get new line indent

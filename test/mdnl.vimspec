@@ -115,5 +115,21 @@ Describe mdnl global functions
       Assert Equals(line('.'), 11)
       Assert Equals(getline(11), '2. [ ] ') 
     End
+    It split as paragraph
+      execute ':e! ' . s:test_data
+      set shiftwidth=2
+      call cursor(12, 0)
+      call mdnl#add_new_line(3)
+
+      Assert Equals(getline(12), '  def') 
+    End
+    It split as list
+      execute ':e! ' . s:test_data
+      set shiftwidth=2
+      call cursor(12, 0)
+      call mdnl#add_new_line(4)
+
+      Assert Equals(getline(12), '+ def') 
+    End
   End
 End

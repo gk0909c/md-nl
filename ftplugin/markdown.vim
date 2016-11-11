@@ -16,6 +16,10 @@ inoremap <silent><buffer> <Plug>(mdnl_split_as_paragraph) <Space><Space><CR><ESC
 nnoremap <silent><buffer> <Plug>(mdnl_split_as_list) i<CR><ESC>:call mdnl#add_new_line(4)<CR>
 inoremap <silent><buffer> <Plug>(mdnl_split_as_list) <CR><ESC>:call mdnl#add_new_line(4)<CR>A
 
+" table
+command! -nargs=+ MdnlTableHeader call mdnl#make_table_header(<f-args>)
+command! -nargs=+ MdnlTableRow call mdnl#make_table_row(<f-args>)
+
 let b:loaded_mdnl = 1
 
 let &cpo = s:save_cpo

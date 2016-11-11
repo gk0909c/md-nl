@@ -132,4 +132,18 @@ Describe mdnl global functions
       Assert Equals(getline(12), '+ def') 
     End
   End
+
+  Describe mdnl table
+    It create header and row
+      execute ':enew!'
+      call mdnl#make_table_header('Col1', 'Col2', 'Col3')
+      call mdnl#make_table_row('data1', 'data2')
+      call mdnl#make_table_row('data3', 'data4', 'data5')
+
+      Assert Equals(getline(1), '|Col1|Col2|Col3|') 
+      Assert Equals(getline(2), '|---|---|---|') 
+      Assert Equals(getline(3), '|data1|data2||') 
+      Assert Equals(getline(4), '|data3|data4|data5|') 
+    End
+  End
 End

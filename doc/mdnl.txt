@@ -72,6 +72,19 @@ To add new list item
     2. list 2
     3. |
 <
+
+Make table
+  execute these commands
+>
+    :MdnlTableHeader Col1 Col2 Col3
+    :MdnlTableRow data1 data2 data3
+<
+  these make below
+>
+    |Col1|Col2|Col3|
+    |---|---|---|
+    |data1|data2|data3|
+<
 ==============================================================================
 INTERFACE                                                     *mdnl-interface* 
 ------------------------------------------------------------------------------
@@ -98,3 +111,13 @@ KEY MAPPINGS
 <Plug>(mdnl_split_as_list)
     like |<Plug>(mdnl_new_listitem)|, but this split temporary line.
     imap and nmap.
+
+COMMANDS
+                                                  *:MdnlTableHeader*
+:MdnlTableHeader [{header}...]
+  This make markdown table header.
+
+                                                  *:MdnlTableRow*
+:MdnlTableRow [{data}...]
+  This make markdown table row.
+  

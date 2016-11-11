@@ -90,3 +90,43 @@ function! s:get_markdown_list_prefix(line)
     return matches[2]
   endif
 endfunction
+
+" create table header
+function! mdnl#make_table_header(...)
+  let line = line('.')
+  let header_row = '|'
+  let second_line = '|'
+
+  for header in a:000
+    let header_row = header_row . header . '|'
+    let second_line = second_line . '---|'
+  endfor
+
+  :execute ":normal i" . header_row
+  call append(line, second_line)
+  call append(line + 1, '')
+  call cursor(line + 2, 0)
+endfunction
+
+" create table row
+function! mdnl#make_table_row(...)
+  let line = line('.')
+  let previous = getline(line - 1)
+  let previous_count = len(split(previous, '|'))
+  let row = '|'
+  let col_count = 1
+
+  for content in a:000
+    let row = row . content . '|'
+    let col_count = col_count + 1
+  endfor
+
+  while col_count <= previous_count
+    let row = row . '|'
+    let col_count = col_count + 1
+  endwhile
+
+  :execute ":normal i" . row
+  call append(line, '')
+  call cursor(line + 1, 0)
+endfunction
